@@ -1,7 +1,6 @@
 require("dotenv/config");
 const { Telegraf } = require("telegraf");
 const axios = require("axios");
-const _ = require("lodash");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
