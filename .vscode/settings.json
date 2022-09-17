@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/cd09e4af-e2db-448f-ab42-3de6b8030f3a/microsoft.web/sites/subscriptions/cd09e4af-e2db-448f-ab42-3de6b8030f3a/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/blazefy",
+  "appService.deploySubpath": "."
+}
