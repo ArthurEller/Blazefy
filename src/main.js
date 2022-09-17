@@ -144,7 +144,7 @@ async function parseResultAndReturnTip() {
   }
 }
 
-async function run() {
+async function logic() {
   await getDoubleResults();
   console.log("---------------------------------------");
   console.log("IS NEW? ", NEW_RESULT);
@@ -194,6 +194,12 @@ async function run() {
   } catch (error) {
     console.log(error);
   }
+}
+
+async function run() {
+  (async () => {
+    while (true) await logic();
+  })();
 }
 
 module.exports = {
