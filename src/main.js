@@ -161,7 +161,7 @@ async function logic() {
           "<b>🤑🤑🤑 SEGURA ESSE WHITEEEE!</b>",
           { parse_mode: "HTML" }
         );
-        await sleep(1000);
+        await sleep(60000);
 
         return parseResultAndReturnTip();
       }
@@ -174,6 +174,13 @@ async function logic() {
         );
         await sleep(1000);
 
+        bot.telegram.sendMessage(
+          process.env.CHANNEL_ID,
+          "<b>🕐 Fazendo análise, aguarde um momento...</b>",
+          { parse_mode: "HTML" }
+        );
+        await sleep(60000);
+
         return parseResultAndReturnTip();
       }
 
@@ -185,6 +192,13 @@ async function logic() {
           { parse_mode: "HTML" }
         );
         await sleep(1000);
+
+        bot.telegram.sendMessage(
+          process.env.CHANNEL_ID,
+          "<b>🕐 Fazendo análise, aguarde um momento...</b>",
+          { parse_mode: "HTML" }
+        );
+        await sleep(60000);
 
         return parseResultAndReturnTip();
       }
