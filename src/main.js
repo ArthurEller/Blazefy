@@ -152,7 +152,7 @@ async function logic() {
         return parseResultAndReturnTip();
       }
 
-      if (LAST_COLOR === PREDICTED_COLOR && GALE === 0) {
+      if (LAST_COLOR === PREDICTED_COLOR && !GALE) {
         await bot.telegram.sendMessage(
           process.env.CHANNEL_ID,
           "<b>✅✅✅ GREEN ✅✅✅</b>",
