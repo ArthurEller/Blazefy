@@ -130,7 +130,7 @@ async function parseResultAndReturnTip() {
     PREDICTED_COLOR = null;
     return bot.telegram.sendMessage(
       process.env.CHANNEL_ID,
-      `❌ <b>Refazendo calculo do algoritmo!</b> ❌`,
+      `❌ <b>Refazendo algoritmo!</b> ❌`,
       { parse_mode: "HTML" }
     );
   }
