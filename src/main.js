@@ -9,6 +9,7 @@ var LAST_COLOR;
 var LAST_SEED;
 var NEW_RESULT = "new";
 var GALE = 0;
+var MESSAGE_ID = null;
 
 const BLAZE_TILES = {
   white: 0,
@@ -94,51 +95,42 @@ async function parseResultAndReturnTip() {
   // INICIAL
   if (!PREDICTED_COLOR || LAST_COLOR === PREDICTED_COLOR) {
     PREDICTED_COLOR = LAST_COLOR === "red" ? "black" : "red";
-    return bot.telegram.sendMessage(
+    const message = await bot.telegram.sendMessage(
       process.env.CHANNEL_ID,
       `<b>🔥Blazefy Double🔥</b>
 <b>🎰 Entrada confirmada no: ${PREDICTED_COLOR === "red" ? "🟥" : "⬛️"}</b>
 <b>🛡 PROTEÇÃO:  ⬜️ </b>`,
       { parse_mode: "HTML" }
     );
+
+    MESSAGE_ID = message.message_id;
+
+    return message;
   }
 
-  // GALE 1
-  if (LAST_COLOR !== PREDICTED_COLOR && GALE < 2) {
+  // GALE
+  if (LAST_COLOR !== PREDICTED_COLOR && GALE <= 2) {
     GALE++;
 
-    return bot.telegram.sendMessage(
+    const message = await bot.telegram.sendMessage(
       process.env.CHANNEL_ID,
-      `<b>🔥Blazefy Double🔥</b>
-<b>🎰 Entrada confirmada no: ${PREDICTED_COLOR === "red" ? "🟥" : "⬛️"}</b>
-<b>🛡 PROTEÇÃO:  ⬜️ </b>
-ℹ️ GALE: ${GALE}
-            `,
-      { parse_mode: "HTML" }
+      `<b>GALE ${GALE === 1 ? "1️⃣" : "2️⃣"}</b>`,
+      {
+        parse_mode: "HTML",
+        reply_to_message_id: MESSAGE_ID,
+      }
     );
+
+    if (GALE === 2) GALE = undefined;
+    return message;
   }
 
-  if (LAST_COLOR !== PREDICTED_COLOR && GALE === 2) {
+  if (LAST_COLOR !== PREDICTED_COLOR && !GALE) {
     GALE = 0;
     PREDICTED_COLOR = null;
     return bot.telegram.sendMessage(
       process.env.CHANNEL_ID,
-      `<b>🔥Blazefy Double🔥</b>
-❌ <b>Não foi dessa vez, atentos no gerenciamento!</b>
-        `,
-      { parse_mode: "HTML" }
-    );
-  }
-
-  if (LAST_COLOR === PREDICTED_COLOR && GALE === 2) {
-    PREDICTED_COLOR = LAST_COLOR === "red" ? "black" : "red";
-    GALE = 0;
-    return bot.telegram.sendMessage(
-      process.env.CHANNEL_ID,
-      `<b>🔥Blazefy Double🔥</b>
-<b>🎰 Entrada confirmada no:${PREDICTED_COLOR === "red" ? "🟥" : "⬛️"}</b>
-<b>🛡 PROTEÇÃO:  ⬜️ </b>
-        `,
+      `❌ <b>Refazendo calculo do algoritmo!</b> ❌`,
       { parse_mode: "HTML" }
     );
   }
@@ -146,59 +138,41 @@ async function parseResultAndReturnTip() {
 
 async function logic() {
   await getDoubleResults();
-  console.log("---------------------------------------");
-  console.log("IS NEW? ", NEW_RESULT);
-  console.log("LAST: ", LAST_COLOR);
-  console.log("PREDICTED: ", PREDICTED_COLOR);
-  console.log("GALE? ", GALE);
 
   try {
     if (NEW_RESULT === "new" || NEW_RESULT === "true") {
       if (LAST_COLOR === "white") {
         GALE = 0;
-        bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           process.env.CHANNEL_ID,
-          "<b>🤑🤑🤑 SEGURA ESSE WHITEEEE!</b>",
+          "<b>🤑🤑🤑 WHITEEEE 🤑🤑🤑</b>",
           { parse_mode: "HTML" }
         );
-        await sleep(60000);
 
         return parseResultAndReturnTip();
       }
 
       if (LAST_COLOR === PREDICTED_COLOR && GALE === 0) {
-        bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           process.env.CHANNEL_ID,
-          "<b>✅✅✅ CHAMA NO GREEN PAPAI 🤑</b>",
-          { parse_mode: "HTML" }
+          "<b>✅✅✅ GREEN ✅✅✅</b>",
+          { parse_mode: "HTML", reply_to_message_id: MESSAGE_ID }
         );
-        await sleep(1000);
 
-        bot.telegram.sendMessage(
-          process.env.CHANNEL_ID,
-          "<b>🕐 Fazendo análise, aguarde um momento...</b>",
-          { parse_mode: "HTML" }
-        );
-        await sleep(60000);
+        MESSAGE_ID = null;
 
         return parseResultAndReturnTip();
       }
 
       if (LAST_COLOR === PREDICTED_COLOR && GALE > 0) {
         GALE = 0;
-        bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           process.env.CHANNEL_ID,
-          "<b>✅✅✅ CHAMA NO GREEN PAPAI 🤑</b>",
-          { parse_mode: "HTML" }
+          "<b>✅✅✅ GREEN ✅✅✅</b>",
+          { parse_mode: "HTML", reply_to_message_id: MESSAGE_ID }
         );
-        await sleep(1000);
 
-        bot.telegram.sendMessage(
-          process.env.CHANNEL_ID,
-          "<b>🕐 Fazendo análise, aguarde um momento...</b>",
-          { parse_mode: "HTML" }
-        );
-        await sleep(60000);
+        MESSAGE_ID = null;
 
         return parseResultAndReturnTip();
       }
@@ -211,6 +185,7 @@ async function logic() {
 }
 
 async function run() {
+  console.log("🔥Blazefy Double🔥");
   (async () => {
     while (true) await logic();
   })();
